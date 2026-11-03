@@ -100,8 +100,10 @@ class Claim(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     application_id: Mapped[int] = mapped_column(ForeignKey("applications.id", ondelete="CASCADE"))
     document_id: Mapped[int | None] = mapped_column(ForeignKey("documents.id", ondelete="SET NULL"))
+    chunk_id: Mapped[int | None] = mapped_column(ForeignKey("document_chunks.id", ondelete="SET NULL"))
     claim_text: Mapped[str] = mapped_column(Text)
-    # emissions | energy | production | financial | practice | other
+    source_quote: Mapped[str | None] = mapped_column(Text)
+    # emissions | energy | production | financial | practice | projection | other
     category: Mapped[str] = mapped_column(String(50), default="other")
     value: Mapped[float | None] = mapped_column(Float)
     unit: Mapped[str | None] = mapped_column(String(50))
@@ -110,6 +112,7 @@ class Claim(Base):
     page_number: Mapped[int | None] = mapped_column(Integer)
     # verified | unverified | contradictory | potential_anomaly | insufficient_information | not_assessed
     status: Mapped[str] = mapped_column(String(40), default="unverified")
+    extraction_method: Mapped[str | None] = mapped_column(String(80))
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     application: Mapped["Application"] = relationship(back_populates="claims")
@@ -125,8 +128,9 @@ class Evidence(Base):
     claim_id: Mapped[int | None] = mapped_column(ForeignKey("claims.id", ondelete="SET NULL"))
     page_number: Mapped[int | None] = mapped_column(Integer)
     excerpt: Mapped[str | None] = mapped_column(Text)
-    # supporting | conflicting | contextual | calculation
+    # claim_source | contextual | supporting | conflicting | calculation
     evidence_type: Mapped[str] = mapped_column(String(30), default="contextual")
+    metric: Mapped[str | None] = mapped_column(String(80))
     value: Mapped[float | None] = mapped_column(Float)
     unit: Mapped[str | None] = mapped_column(String(50))
     reporting_period: Mapped[str | None] = mapped_column(String(80))
@@ -134,7 +138,6 @@ class Evidence(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     application: Mapped["Application"] = relationship(back_populates="evidence")
-
 
 class AgentRun(Base):
     __tablename__ = "agent_runs"
