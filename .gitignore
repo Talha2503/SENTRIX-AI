@@ -1,0 +1,6 @@
+.env
+venv/
+uploads/
+__pycache__/
+node_modules/
+.next/
