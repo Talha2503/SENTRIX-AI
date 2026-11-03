@@ -2,12 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
+from app.api import applications, documents
 from app.core.config import settings
 from app.core.database import engine
 
 app = FastAPI(
     title=settings.APP_NAME,
-    version="0.1.0",
+    version="0.2.0",
     description="Autonomous Green Finance Intelligence: evidence-based decision support.",
 )
 
@@ -18,6 +19,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(applications.router)
+app.include_router(documents.router)
 
 
 @app.get("/health")
