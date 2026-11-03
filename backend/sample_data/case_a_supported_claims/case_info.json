@@ -1,0 +1,36 @@
+{
+  "company": "Crescent Ceramics (Pvt) Ltd",
+  "sector": "Manufacturing - ceramics",
+  "location": "SITE Industrial Area, Karachi, Sindh",
+  "project": "Kiln heat-recovery system and variable frequency drives",
+  "requested_amount_pkr": 35000000,
+  "documents": [
+    "sustainability_statement.pdf",
+    "electricity_records.csv",
+    "production_data.csv",
+    "financial_statements.pdf"
+  ],
+  "claimed_emissions_reduction_pct": 8,
+  "baseline_stated": true,
+  "method_stated": true,
+  "derived_metrics": {
+    "electricity_change_pct": -8.0,
+    "production_change_pct": 3.0,
+    "kwh_per_tonne_base": 200.0,
+    "kwh_per_tonne_cmp": 178.64,
+    "kwh_per_tonne_change_pct": -10.7,
+    "electricity_emissions_estimate_t_base": 1350.0,
+    "electricity_emissions_estimate_t_cmp": 1242.0,
+    "electricity_emissions_estimate_change_pct": -8.0,
+    "note": "Estimates use an illustrative factor. A change in electricity use alone does not prove a change in emissions: energy source, boundary and production mix can differ."
+  },
+  "financial_ratios_cmp_year": {
+    "current_ratio": 1.68,
+    "debt_to_equity": 0.55,
+    "interest_cover": 6.25,
+    "net_margin_pct": 8.7,
+    "revenue_growth_pct": 7.8
+  },
+  "expected_outcome": "Emissions claim (8% absolute reduction) has a stated baseline year, a stated method and a consistent calculation; electricity records (-8.0%) and production records (+3.0%) agree. Practice claims reference appendix items. Claims should be marked supported.",
+  "synthetic": true
+}

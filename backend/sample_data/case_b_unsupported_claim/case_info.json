@@ -1,0 +1,36 @@
+{
+  "company": "Zenith Packaging Industries (Pvt) Ltd",
+  "sector": "Manufacturing - industrial packaging",
+  "location": "Korangi Industrial Area, Karachi, Sindh",
+  "project": "1.2 MW rooftop solar PV system and energy-efficient motors and drives",
+  "requested_amount_pkr": 50000000,
+  "documents": [
+    "sustainability_statement.pdf",
+    "electricity_records.csv",
+    "production_data.csv",
+    "financial_statements.pdf"
+  ],
+  "claimed_emissions_reduction_pct": 40,
+  "baseline_stated": false,
+  "method_stated": false,
+  "derived_metrics": {
+    "electricity_change_pct": 18.0,
+    "production_change_pct": 5.0,
+    "kwh_per_tonne_base": 200.0,
+    "kwh_per_tonne_cmp": 224.76,
+    "kwh_per_tonne_change_pct": 12.4,
+    "electricity_emissions_estimate_t_base": 1080.0,
+    "electricity_emissions_estimate_t_cmp": 1274.4,
+    "electricity_emissions_estimate_change_pct": 18.0,
+    "note": "Estimates use an illustrative factor. A change in electricity use alone does not prove a change in emissions: energy source, boundary and production mix can differ."
+  },
+  "financial_ratios_cmp_year": {
+    "current_ratio": 1.27,
+    "debt_to_equity": 1.2,
+    "interest_cover": 2.61,
+    "net_margin_pct": 7.5,
+    "revenue_growth_pct": 10.4
+  },
+  "expected_outcome": "Emissions claim should be flagged as insufficiently supported: no baseline year and no calculation method. Electricity +18% and production +5% imply kWh per tonne +12.4%, which conflicts with the energy-efficiency claim. Verification must test alternative explanations (energy source, reporting boundary, production mix). Practice claims have no supporting records. The report must NOT call the company fraudulent.",
+  "synthetic": true
+}

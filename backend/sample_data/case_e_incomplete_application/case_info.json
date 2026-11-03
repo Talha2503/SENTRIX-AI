@@ -1,0 +1,17 @@
+{
+  "company": "Sapphire Leather Works (Pvt) Ltd",
+  "sector": "Manufacturing - leather goods",
+  "location": "Sialkot, Punjab",
+  "project": "Effluent treatment upgrade and energy-efficient boilers",
+  "requested_amount_pkr": 20000000,
+  "documents": [
+    "sustainability_statement.pdf"
+  ],
+  "claimed_emissions_reduction_pct": 25,
+  "baseline_stated": false,
+  "method_stated": false,
+  "derived_metrics": null,
+  "financial_ratios_cmp_year": null,
+  "expected_outcome": "Only a sustainability statement was submitted. The system must report insufficient information (no electricity, production or financial records) and must NOT invent conclusions or scores for dimensions it cannot assess.",
+  "synthetic": true
+}
