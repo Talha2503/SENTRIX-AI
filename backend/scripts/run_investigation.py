@@ -1,4 +1,4 @@
-"""Start an investigation and watch it finish.
+"""Start an investigation, watch it finish, and print the results.
 
 Usage (server must be running):  python scripts\\run_investigation.py <application_id>
 """
@@ -8,6 +8,7 @@ import time
 import httpx
 
 BASE_URL = "http://127.0.0.1:8000"
+SEVERITY_ORDER = {"high": 0, "medium": 1, "low": 2}
 
 
 def main(app_id: int) -> None:
@@ -28,13 +29,18 @@ def main(app_id: int) -> None:
             for warning in (run["output"] or {}).get("warnings", []):
                 print(f"WARNING: {warning}")
 
-        print(f"\nclaims={info['claim_count']}  evidence={info['evidence_count']}\n")
+        print(f"\nclaims={info['claim_count']}  evidence={info['evidence_count']}")
+
+        print("\n=== CLAIMS ===")
         for claim in client.get(f"/applications/{app_id}/claims").json():
-            print(
-                f"- [{claim['category']}] {claim['claim_text']}\n"
-                f"    value={claim['value']} {claim['unit'] or ''}  "
-                f"baseline={claim['baseline_period']}  page={claim['page_number']}"
-            )
+            print(f"- [{claim['status']}] ({claim['category']}) {claim['claim_text']}")
+
+        findings = client.get(f"/applications/{app_id}/findings").json()
+        findings.sort(key=lambda f: (SEVERITY_ORDER.get(f["severity"], 3), f["id"]))
+        print(f"\n=== FINDINGS ({len(findings)}) ===")
+        for f in findings:
+            print(f"[{f['severity'].upper():<6}] {f['status']:<24} {f['title']}")
+            print(f"           ({f['agent_name']}, evidence items: {len(f['evidence_ids'])})")
 
 
 if __name__ == "__main__":

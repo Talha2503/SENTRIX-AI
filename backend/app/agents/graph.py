@@ -1,17 +1,18 @@
 """Central investigation engine (LangGraph).
 
-Day 3 graph:  intake_check -> (conditional) -> document_intelligence -> finalize
-Later days plug the other agents in between, using the same state and run_agent helper.
+intake_check -> document_intelligence -> [financial | taxonomy | greenwashing] (parallel) -> consolidate -> finalize
+Later days add climate risk, adversarial verification and the decision agent to this same graph.
 """
+from collections import Counter
 from typing import TypedDict
 
 from langgraph.graph import END, START, StateGraph
 from sqlalchemy import select
 
-from app.agents import document_intelligence
+from app.agents import document_intelligence, financial, greenwashing, taxonomy
 from app.agents.base import reset_investigation, run_agent
 from app.core.database import SessionLocal
-from app.models.models import Application, Document
+from app.models.models import Application, Document, Finding
 
 EXPECTED_DOC_TYPES = ["sustainability_report", "energy_records", "production_data", "financial_statement"]
 
@@ -46,16 +47,35 @@ def route_after_intake(state: InvestigationState) -> str:
     return "document_intelligence" if state.get("status") == "investigating" else "finalize"
 
 
-def document_intelligence_node(state: InvestigationState) -> dict:
+def make_agent_node(agent_name: str, task: str, module):
+    def node(state: InvestigationState) -> dict:
+        app_id = state["application_id"]
+        with SessionLocal() as db:
+            run_agent(db, app_id, agent_name, task, lambda: module.run(db, app_id))
+        return {}
+
+    return node
+
+
+def consolidate(state: InvestigationState) -> dict:
     app_id = state["application_id"]
     with SessionLocal() as db:
-        run_agent(
-            db,
-            app_id,
-            "document_intelligence",
-            "extract claims, figures and tables with source references",
-            lambda: document_intelligence.run(db, app_id),
-        )
+        findings = db.scalars(select(Finding).where(Finding.application_id == app_id)).all()
+
+        def summary() -> dict:
+            return {
+                "findings_total": len(findings),
+                "by_status": dict(Counter(f.status for f in findings)),
+                "by_severity": dict(Counter(f.severity for f in findings)),
+                "by_agent": dict(Counter(f.agent_name for f in findings)),
+                "needs_verification": [
+                    f.id for f in findings
+                    if f.severity == "high" or f.status in ("contradictory", "potential_anomaly")
+                ],
+                "missing_document_types": state.get("coverage", {}).get("missing_types", []),
+            }
+
+        run_agent(db, app_id, "orchestrator", "consolidate findings; flag items for adversarial review", summary)
     return {}
 
 
@@ -63,8 +83,8 @@ def finalize(state: InvestigationState) -> dict:
     app_id = state["application_id"]
     with SessionLocal() as db:
         application = db.get(Application, app_id)
-        # Interim status for Day 3; later days replace this with "completed" once a report exists.
-        application.status = "extracted" if state.get("status") == "investigating" else "completed"
+        # Interim status: later days replace this with "completed" once a report exists.
+        application.status = "analysed" if state.get("status") == "investigating" else "completed"
         db.commit()
     return {}
 
@@ -72,15 +92,37 @@ def finalize(state: InvestigationState) -> dict:
 def build_graph():
     graph = StateGraph(InvestigationState)
     graph.add_node("intake_check", intake_check)
-    graph.add_node("document_intelligence", document_intelligence_node)
+    graph.add_node(
+        "document_intelligence",
+        make_agent_node("document_intelligence", "extract claims, figures and tables with source references",
+                        document_intelligence),
+    )
+    graph.add_node(
+        "financial_intelligence",
+        make_agent_node("financial_intelligence", "calculate financial indicators and flag exceptions", financial),
+    )
+    graph.add_node(
+        "green_taxonomy",
+        make_agent_node("green_taxonomy", "screen the project against the green criteria set", taxonomy),
+    )
+    graph.add_node(
+        "greenwashing_detection",
+        make_agent_node("greenwashing_detection", "check claims against baselines, methods and records",
+                        greenwashing),
+    )
+    graph.add_node("consolidate", consolidate)
     graph.add_node("finalize", finalize)
+
     graph.add_edge(START, "intake_check")
     graph.add_conditional_edges(
         "intake_check",
         route_after_intake,
         {"document_intelligence": "document_intelligence", "finalize": "finalize"},
     )
-    graph.add_edge("document_intelligence", "finalize")
+    for node in ("financial_intelligence", "green_taxonomy", "greenwashing_detection"):
+        graph.add_edge("document_intelligence", node)
+    graph.add_edge(["financial_intelligence", "green_taxonomy", "greenwashing_detection"], "consolidate")
+    graph.add_edge("consolidate", "finalize")
     graph.add_edge("finalize", END)
     return graph.compile()
 
