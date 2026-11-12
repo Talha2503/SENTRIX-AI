@@ -1,0 +1,34 @@
+{
+  "company": "Lakeview Textiles (Pvt) Ltd",
+  "sector": "Manufacturing - textile processing",
+  "location": "Faisalabad, Punjab",
+  "project": "600 kW solar expansion and heat recovery on dyeing lines",
+  "requested_amount_pkr": 30000000,
+  "documents": [
+    "sustainability_statement.pdf",
+    "electricity_records.csv",
+    "production_data.csv",
+    "financial_statements.pdf"
+  ],
+  "claimed_emissions_reduction_pct": 15,
+  "derived_metrics": {
+    "electricity_change_pct": 6.0,
+    "production_change_pct": 2.0,
+    "kwh_per_tonne_base": 200.0,
+    "kwh_per_tonne_cmp": 207.84,
+    "kwh_per_tonne_change_pct": 3.9,
+    "electricity_emissions_estimate_t_base": 1800.0,
+    "electricity_emissions_estimate_t_cmp": 1908.0,
+    "electricity_emissions_estimate_change_pct": 6.0,
+    "note": "Estimates use an illustrative factor. A change in electricity use alone does not prove a change in emissions: energy source, boundary and production mix can differ."
+  },
+  "financial_ratios_cmp_year": {
+    "current_ratio": 1.4,
+    "debt_to_equity": 0.61,
+    "interest_cover": 4.74,
+    "net_margin_pct": 7.6,
+    "revenue_growth_pct": 5.7
+  },
+  "expected_outcome": "The 15% claim is extracted without a baseline (the baseline appears in a later section), so the verification step should find it and trigger a targeted reassessment. Electricity records show +6.0% total consumption and kWh per tonne +3.9%, but the statement documents an operating captive solar plant, so the anomaly should be DISPUTED (alternative explanation documented), with a follow-up to obtain solar generation records. No methodology is documented. The report must not accuse the company.",
+  "synthetic": true
+}

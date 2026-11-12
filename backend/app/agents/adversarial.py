@@ -45,7 +45,9 @@ ONSITE_RE = re.compile(
     r"|(?:installed|commissioned|operational|operating|generat\w+)[^.\n]{0,80}(?:solar|captive|wind|biomass|generator)",
     re.I,
 )
-FUTURE_RE = re.compile(r"\b(expect|plan|propos|will|intend|projected|projection|future)", re.I)
+FUTURE_RE = re.compile(
+    r"\b(?:expect\w*|plans?\b|planned|planning|propos\w*|will\b|intend\w*|projected|projection|future)", re.I
+)
 BOUNDARY_RE = re.compile(r"boundar", re.I)
 TOPIC_RE = re.compile(r"emission|electricity|efficien", re.I)
 
