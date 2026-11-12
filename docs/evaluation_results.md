@@ -1,6 +1,6 @@
 # SENTRIX AI - Evaluation results
 
-Generated: 2026-11-13 03:00  
+Generated: 2026-11-13 03:18  
 Language model: `openai/gpt-oss-120b` (Groq)
 
 ## Scope and caveats
@@ -19,18 +19,18 @@ Language model: `openai/gpt-oss-120b` (Groq)
 | Extraction accuracy (numeric fields vs reference) | 66/66 (100%) |
 | Calculation correctness (vs independently computed values) | 33/33 (100%) |
 | Findings traceable to a source or calculation | 21/21 (100%) |
-| Claim quotes found verbatim in their source passage | 22/22 (100%) |
+| Claim quotes found verbatim in their source passage | 24/24 (100%) |
 | Behaviour checks passed | 31/33 (94%) |
-| Processing time per case | 6-18 s (mean 12 s) |
+| Processing time per case | 3-21 s (mean 11 s) |
 
 ## Per case
 
 | Case | Time | Agent tasks | Extraction | Calculations | Traceable | Quotes | Behaviour checks |
 |---|---|---|---|---|---|---|---|
 | case_b_unsupported_claim | 9 s | 9/9 (100%) | 22/22 (100%) | 11/11 (100%) | 6/6 (100%) | 7/7 (100%) | 11/11 |
-| case_f_alternative_explanation | 6 s | 9/9 (100%) | 22/22 (100%) | 11/11 (100%) | 4/4 (100%) | 2/2 (100%) | 5/7 |
-| case_a_supported_claims | 15 s | 9/9 (100%) | 22/22 (100%) | 11/11 (100%) | 8/8 (100%) | 6/6 (100%) | 8/8 |
-| case_e_incomplete_application | 18 s | 9/9 (100%) | n/a | n/a | 3/3 (100%) | 7/7 (100%) | 7/7 |
+| case_f_alternative_explanation | 3 s | 9/9 (100%) | 22/22 (100%) | 11/11 (100%) | 4/4 (100%) | 2/2 (100%) | 5/7 |
+| case_a_supported_claims | 9 s | 9/9 (100%) | 22/22 (100%) | 11/11 (100%) | 8/8 (100%) | 9/9 (100%) | 8/8 |
+| case_e_incomplete_application | 21 s | 9/9 (100%) | n/a | n/a | 3/3 (100%) | 6/6 (100%) | 7/7 |
 
 ## Behaviour checks
 

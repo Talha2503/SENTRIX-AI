@@ -72,8 +72,18 @@ def sentences(text: str) -> list[str]:
 
 
 def normalize_year(raw: str) -> str:
-    raw = re.sub(r"\s+", "", raw.upper())
-    return raw
+    return re.sub(r"\s+", "", raw.upper())
+
+
+def needs_challenge(f: Finding) -> bool:
+    """High-impact findings, anomalies, and missing-information findings tied to a claim.
+
+    The last group matters: before a gap such as 'no baseline stated' is accepted, the documents are
+    searched again, because the information may be stated elsewhere in the submission.
+    """
+    if f.severity == "high" or f.status in ("contradictory", "potential_anomaly"):
+        return True
+    return f.status == "insufficient_information" and f.claim_id is not None and f.category == "greenwashing"
 
 
 def load_chunks(db: Session, application_id: int):
@@ -307,7 +317,7 @@ def run(db: Session, application_id: int, allow_reassess: bool = True) -> dict:
     pending = db.scalars(
         select(Finding).where(Finding.application_id == application_id, Finding.verification_status == "pending")
     ).all()
-    challenged = [f for f in pending if f.severity == "high" or f.status in ("contradictory", "potential_anomaly")]
+    challenged = [f for f in pending if needs_challenge(f)]
     challenged.sort(key=lambda f: (SEVERITY_RANK.get(f.severity, 3), f.id))
     challenged = challenged[:MAX_CHALLENGES]
     challenged_ids = {f.id for f in challenged}
