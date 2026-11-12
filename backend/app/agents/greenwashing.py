@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.models.models import Claim, Document, DocumentChunk, Evidence
 from app.services.calculations import add_calc_evidence, metric_by_period, pct_change, two_latest
-from app.services.findings import STATUS_PRIORITY, add_finding
+from app.services.findings import STATUS_PRIORITY, add_finding, clear_agent_results
 
 AGENT = "greenwashing_detection"
 TOLERANCE_POINTS = 5.0  # allowed gap (percentage points) between a claim and the records
@@ -349,6 +349,11 @@ def check_consistency(r: Run, filenames: dict[int, str]):
 
 # ------------------------------------------------------------------ entry point
 def run(db: Session, application_id: int) -> dict:
+    clear_agent_results(
+        db, application_id, AGENT,
+        ["electricity_change_pct", "production_change_pct", "kwh_per_tonne_change_pct", "methodology_statement"],
+    )
+    db.query(Claim).filter(Claim.application_id == application_id).update({"status": "unverified"})
     r = Run(db, application_id)
     claims = db.scalars(select(Claim).where(Claim.application_id == application_id).order_by(Claim.id)).all()
     chunk_rows = db.execute(

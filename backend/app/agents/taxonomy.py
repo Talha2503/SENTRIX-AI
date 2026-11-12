@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.core.criteria import ACTIVITIES, CRITERIA_SET, EXCLUSION_PATTERNS, REQUIREMENTS
 from app.models.models import Application, Claim, Document, DocumentChunk
 from app.services.calculations import metric_by_period
-from app.services.findings import add_finding
+from app.services.findings import add_finding, clear_agent_results
 
 AGENT = "green_taxonomy"
 OUTCOME_LABEL = {
@@ -88,6 +88,7 @@ CHECKS = {
 
 
 def run(db: Session, application_id: int) -> dict:
+    clear_agent_results(db, application_id, AGENT)
     application = db.get(Application, application_id)
     claims = db.scalars(select(Claim).where(Claim.application_id == application_id)).all()
     chunk_texts = [

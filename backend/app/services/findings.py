@@ -1,7 +1,7 @@
-"""Shared helper for recording findings together with their evidence links."""
+"""Shared helpers for recording findings together with their evidence links."""
 from sqlalchemy.orm import Session
 
-from app.models.models import Finding
+from app.models.models import Evidence, Finding
 
 # Higher number = more serious. Used to roll finding statuses up to a claim.
 STATUS_PRIORITY = {
@@ -49,3 +49,17 @@ def add_finding(
     db.add(finding)
     db.flush()
     return finding
+
+
+def clear_agent_results(db: Session, application_id: int, agent_name: str, evidence_metrics=()) -> None:
+    """Remove an agent's earlier findings (and its own calculation evidence) so it can be re-run."""
+    db.query(Finding).filter(
+        Finding.application_id == application_id, Finding.agent_name == agent_name
+    ).delete(synchronize_session=False)
+    if evidence_metrics:
+        db.query(Evidence).filter(
+            Evidence.application_id == application_id,
+            Evidence.metric.in_(list(evidence_metrics)),
+            Evidence.extraction_method.in_(["deterministic", "keyword_search"]),
+        ).delete(synchronize_session=False)
+    db.commit()
