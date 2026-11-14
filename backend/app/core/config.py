@@ -9,6 +9,9 @@ class Settings(BaseSettings):
     GROQ_MODEL: str = "openai/gpt-oss-120b"
     UPLOAD_DIR: str = "uploads"
     CORS_ORIGINS: str = "http://localhost:3000"
+    # True on serverless hosts such as Vercel: run the investigation inside the request,
+    # because the process is frozen once the response has been sent.
+    INLINE_INVESTIGATION: bool = False
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

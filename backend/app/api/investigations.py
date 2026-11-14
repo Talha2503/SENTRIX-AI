@@ -3,6 +3,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.agents.graph import run_investigation
+from app.core.config import settings
 from app.core.database import SessionLocal, get_db
 from app.models.models import AgentRun, Application, Claim, Evidence
 from app.schemas.investigation import (
@@ -54,6 +55,13 @@ def start_investigation(
         raise HTTPException(409, "An investigation is already running. Use ?force=true to restart.")
     application.status = "investigating"
     db.commit()
+
+    if settings.INLINE_INVESTIGATION:
+        # Serverless: do the work now; the response is sent when the investigation has finished.
+        _run_in_background(application_id)
+        db.refresh(application)
+        return {"application_id": application_id, "status": application.status}
+
     background.add_task(_run_in_background, application_id)
     return {"application_id": application_id, "status": "investigating"}
 
