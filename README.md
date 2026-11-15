@@ -2,7 +2,7 @@
 
 **Beyond Claims. Into Evidence.**
 
-Battleverse 2026 - Battle of Intelligence.
+**Live demo:** https://sentrix-green-finance.vercel.app
 
 SENTRIX AI is a decision-support prototype for preliminary green-finance due diligence. An analyst submits a
 financing application with supporting documents; a coordinated set of AI agents extracts claims and figures,
